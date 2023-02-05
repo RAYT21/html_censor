@@ -16,9 +16,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if (wordInput.value != '') {
             const wordBox = document.createElement('div');
             wordBox.classList.add('logField', 'word');
-            wordBox.textContent = wordInput.value;
-            wordsParent.append(wordBox);
+            console.log(wordInput.value);
+
+            const hxr = requestToServer(wordInput.value);
+            if (hxr.status == 200) {
+                wordBox.textContent = wordInput.value;
+                wordsParent.append(wordBox);
+            }
+        
             wordInput.value = '';
+
+
 
             wordBox.addEventListener('mouseenter', () => {
                wordBox.classList.add('red');
@@ -39,7 +47,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
     backMenuBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        window.location.href = '/html/menu.html';
+        window.location.href = '/frontend/html/menu.html';
     });
-
 });
+
+function requestToServer(word){
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', 'http://127.0.0.2:5000/regexGenerator/'+word, false);
+  xhr.send();
+
+  if (xhr.status != 200) {
+    console.log(xhr.status + ': ' + xhr.statusText);
+  } else {
+    console.log(xhr.status + ': ' + xhr.statusText);
+    return xhr;
+  }
+  
+} 
+
+function parseJsonByRegex(){
+    
+}
+
+function addRegexInStorage(){
+
+}
+
+
+
+

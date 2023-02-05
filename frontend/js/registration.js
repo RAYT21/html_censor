@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     backMainBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        window.location.href = '/html/index.html';
+        window.location.href = '/frontend/html/index.html';
     });
     
 });

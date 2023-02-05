@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     backFromSet.addEventListener('click', (e) => {
         e.preventDefault();
-        window.location.href = '/html/menu.html';
+        window.location.href = '/frontend/html/menu.html';
     });
     
 });
