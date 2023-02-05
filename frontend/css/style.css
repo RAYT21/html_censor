@@ -1,0 +1,351 @@
+body {
+  background-color: rgb(255, 255, 255);
+  font-family: 'Manrope', sans-serif;
+}
+
+
+
+.card {
+  overflow: hidden;
+  background-color: rgba(91, 224, 244, 0.42);
+  padding: 20px 20px 20px 30px;
+  border-radius: 10px;
+  top: 0%;
+  left: 0%;
+  width: 440px;
+  height: 230px;
+  transition: transform 300ms, box-shadow 300ms;
+  box-shadow: 5px 10px 10px rgba(2, 128, 144, 0.306);
+    
+}
+
+.card::-webkit-scrollbar {
+  width: 10px;               /* ширина scrollbar */
+}
+.card::-webkit-scrollbar-track {
+  background-color: rgba(91, 224, 244, 0.185);
+}
+.card::-webkit-scrollbar-thumb {
+  background-color:  #fff;   /* цвет плашки */
+  border-radius: 20px;       /* закругления плашки */
+  border: 3px solid #fff;  /* padding вокруг плашки */
+}
+
+.card::before, .card::after {
+    content: '';
+    position: absolute;
+    width: 600px;
+    height: 600px;
+    border-top-left-radius: 40%;
+    border-top-right-radius: 45%;
+    border-bottom-left-radius: 45%;
+    border-bottom-right-radius: 40%;
+    z-index: -1;
+}
+
+.dick-card {
+  overflow-y: scroll;
+}
+
+.card::before {
+    left: 30%;
+    bottom: -130%;
+    background-color: rgba(69, 105, 144, 0.261);
+    animation: waves 6s infinite linear;
+}
+
+.card::after {
+    left: 25%;
+    bottom: -125%;
+    background-color: rgba(2, 128, 144, 0.185);
+    animation: waves 7s infinite;
+  }
+
+.logField {
+    font-family: 'Manrope', sans-serif;
+    display: block;
+    border-radius: 5px;
+    font-size: 20px;
+    color:black;
+    font-weight: 500;
+    background: white;
+    width: 100%;
+    border: 0;
+    padding: 10px 10px;
+    margin: 15px -10px;
+}
+
+button {
+    font-family: 'Manrope', sans-serif;
+    cursor: pointer;
+    color: #fff;
+    font-size: 16px;
+    width: auto;
+    border: 0;
+    position: relative;
+    padding: 10px 10px;
+    margin-left: -5px;
+    margin-right: 30px;
+    border-radius: 5px;
+    background-color: rgb(91, 109, 244);
+    height: 47px;
+}
+
+.card:hover {
+    background-color: rgba(91, 224, 244, 0.637);
+  }
+
+@keyframes waves {
+  from {
+    transform: rotate(0); 
+}
+  to {
+    transform: rotate(360deg); 
+}
+}
+
+.toRegPage {
+  position: relative;
+  padding: 0 15px;
+  display: inline-block;
+}
+
+a {
+    text-decoration: none;
+    color: #fff;
+    font-size: 16px;
+}
+
+#register {
+    width: auto;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
+#exit {
+    background-color: rgba(252, 29, 77, 0.856);
+    margin-top: 20px;
+}
+
+.menu-btn {
+    font-size: 20px;
+    padding: 10px 10px;
+}
+
+.menu-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 10px;
+
+}
+
+.user-info {
+  width: auto;
+  height: auto;
+  font-size: 20px;
+}
+
+#sizes_input {
+  font-size: 1em;
+  letter-spacing: 0px;
+  width: 35%;
+}
+
+.sizes-wrapper {
+  display: flex;
+  flex-direction: column;
+  margin-top: 5%;
+}
+
+.sizes-table {
+  margin-top: 2%;
+  white-space: wrap;
+  flex-wrap: wrap;
+  display: flex;
+  text-align: center;
+  box-sizing: border-box;
+  flex-direction: row;
+}
+
+.size {
+  border: 2px solid black;
+  background: white;
+  height: 10%;
+  padding: 10px;
+  min-width: 7%;
+  text-align: center;
+  margin-right: 5%;
+  margin-bottom: 3%;
+  display: inline-block;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.size:hover {
+  background: #eb5050;
+  transition: all 0.5s;
+
+}
+
+.remove-size {
+  min-width: 4%;
+  display: inline-block;
+  cursor: pointer;
+  padding: 5px;
+  text-align: center;
+  background: white;
+  height: 100%;
+}
+
+.icon-btn {
+  width: 30px;
+  height: 30px;
+}
+
+.add-words {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.add-word {
+  width: 190px;
+  outline-style: none;
+  
+}
+
+.mini-btn {
+  background-color:#fff;
+  height: 47px;
+  margin: 0;
+}
+
+.menu-btn {
+  border-radius: 0px;
+}
+
+.import-btn {
+  border-bottom-left-radius: 5px;
+  border-top-left-radius: 5px
+}
+
+.back-btn {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  background-color:#eb5050de;
+}
+
+.menu-btn-wrap {
+  display: flex;
+  flex-direction: row;
+  margin-left: 15px;
+  border-radius: 0px;
+}
+
+.dictionary-container {
+  width: 95%;
+  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-items: center;
+  align-items:center;
+  margin-right: 0px;
+}
+
+.red {
+  background-color:#eb5050;
+  cursor: pointer;
+}
+
+.word {
+  margin-top: 0;
+  width: auto;
+  margin-right: 20px;
+  margin-bottom: 10px;
+  font-size: 16px;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+}
+
+.toggle {
+  cursor: pointer;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.toggle-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.toggle-switch {
+  display: inline-block;
+  background: #ccc;
+  border-radius: 16px;
+  width: 58px;
+  height: 32px;
+  position: relative;
+  vertical-align: middle;
+  transition: background 0.25s;
+}
+.toggle-switch:before, .toggle-switch:after {
+  content: "";
+}
+.toggle-switch:before {
+  display: block;
+  background: linear-gradient(to bottom, #fff 0%, #eee 100%);
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.25);
+  width: 24px;
+  height: 24px;
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  transition: left 0.25s;
+}
+.toggle:hover .toggle-switch:before {
+  background: linear-gradient(to bottom, #fff 0%, #fff 100%);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5);
+}
+.toggle-checkbox:checked + .toggle-switch {
+  background: #246bad;
+}
+.toggle-checkbox:checked + .toggle-switch:before {
+  left: 30px;
+}
+
+.toggle-checkbox {
+  position: absolute;
+  visibility: hidden;
+}
+
+.toggle-label {
+  margin-left: 15px;
+  position: relative;
+  font-size: 16px;
+  top: 2px;
+}
+
+#back-to-main {
+  border-radius: 5px;
+  float: right;
+  margin-right: 10px;
+}
+
+#back {
+  border-radius: 5px;
+  margin-top: 10px;
+  float: right;
+}
+
+
+.enter-button{
+  background-color: rgba(46, 182, 33, 0.856);
+}

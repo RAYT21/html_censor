@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css">
+    <title>Словарь</title>
+</head>
+
+<body>
+    <form class="card dick-card">
+        <div class="add-words">
+            <input class="logField add-word" type="text" placeholder="Добавьте слово" maxlength="35" autofocus>
+            <button class="plus-btn mini-btn"><img class="icon-btn" src="/img/plus.png" alt=""></button>
+            <div class="menu-btn-wrap">
+                <button class="menu-btn mini-btn import-btn"><img class="icon-btn" src="/img/import.png" alt=""></button>
+                <button class="menu-btn mini-btn export-btn"><img class="icon-btn" src="/img/export.png" alt=""></button>
+                <button id="back-to-menu" class="menu-btn mini-btn back-btn"><img class="icon-btn" src="/img/undo.png" alt=""></button>
+            </div>
+        </div>
+        <div class="dictionary-container">
+
+        </div>
+    </form>
+    <script src="/js/dictionary_scripts.js"></script>
+</body>
+
+</html>
