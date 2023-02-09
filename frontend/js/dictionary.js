@@ -60,6 +60,7 @@ function requestToServer(word){
     console.log(xhr.status + ': ' + xhr.statusText);
   } else {
     console.log(xhr.status + ': ' + xhr.statusText);
+    console.log(xhr.response)
     return xhr;
   }
   
