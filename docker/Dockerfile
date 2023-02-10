@@ -1,4 +1,4 @@
-FROM python:3.8.4-slim-buster
+FROM python:latest
 
 RUN mkdir /work
 
@@ -9,5 +9,5 @@ WORKDIR /work
 RUN pip install flask
 RUN pip install flask-restx requests
 RUN pip install flask-cors 
-RUN pip install pymorphy2
+RUN pip install pymorphy3
 

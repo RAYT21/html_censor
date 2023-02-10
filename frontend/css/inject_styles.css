@@ -1,0 +1,13 @@
+.inject-text{
+  
+}
+
+.inject-text:hover::before {
+  content: attr(hover-text);
+  background-color: red;
+}
+
+.inject-text::before {
+  content: attr(text);
+  background-color: red;
+}
