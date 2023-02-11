@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', () => {
     const backMainBtn = document.querySelector('.back-btn');
     const regBtn = document.querySelector('#register');
@@ -20,7 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         } 
              
-        console.log("ебать " + login.value.length);
+        console.log("Хеш пароля - " + "<" + sha256(password.value) + ">");
     })
     backMainBtn.addEventListener('click', (e) => {
         e.preventDefault();
