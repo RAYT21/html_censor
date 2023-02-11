@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         if (/[^a-zA-Z0-9]/.test(login.value) && /[^a-zA-Z0-9]/.test(password.value))
         {
-            console.log("Есть недопустимые символы в логине", login.value);
+            alert("Введенные данные некорректны.В логине или пароле имеются недопустимые символы")
             return;
         } 
              

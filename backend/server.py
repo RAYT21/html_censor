@@ -23,8 +23,6 @@ class uidClaassTypes(Resource):
 		regex = createRegEx(word)
 		return make_response(jsonify({'word': word,'regex': regex}), 200)
 		 
-
-
 def createRegEx(word):
 	morph = pymorphy2.MorphAnalyzer()
 	array = []
