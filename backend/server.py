@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS, cross_origin
 from flask_restx import Api, Resource, fields
-import pymorphy2
+import pymorphy3
 import re
 
 
@@ -24,7 +24,7 @@ class uidClaassTypes(Resource):
 		return make_response(jsonify({'word': word,'regex': regex}), 200)
 		 
 def createRegEx(word):
-	morph = pymorphy2.MorphAnalyzer()
+	morph = pymorphy3.MorphAnalyzer()
 	array = []
 	for i in morph.parse(word):
 		print(i)
