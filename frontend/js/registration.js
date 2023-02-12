@@ -2,27 +2,67 @@
 document.addEventListener('DOMContentLoaded', () => {
     const backMainBtn = document.querySelector('.back-btn');
     const regBtn = document.querySelector('#register');
-    const login = document.querySelector('#login');
-    const password = document.querySelector('#password');
-    const minLengthLogin = 4;
-    const maxLengthLogin = 30;
-    const minLengthPassword = 13;
-    const maxLengthPassword = 40;
+    const authInputs = document.querySelectorAll('.logField');
     regBtn.addEventListener('click', (e)=>{
         e.preventDefault();
-
-        if(!(login.value.length >= minLengthLogin && login.value.length <= maxLengthLogin && password.value.length >= minLengthPassword && password.value.length <= maxLengthPassword)){
-            alert("Введенные данные некорректны.\n Длина логина должна составлять от 4 до 30 символов включительно.\n Длина пароля от 13 до 40 символов включительно.");
+        const login = authInputs[0].value;
+        const password = authInputs[1].value;
+        const correct = checkData(login,password)
+        if(!correct)
             return;
-        }
-        if (/[^a-zA-Z0-9]/.test(login.value) && /[^a-zA-Z0-9]/.test(password.value))
-        {
-            alert("Введенные данные некорректны.В логине или пароле имеются недопустимые символы")
-            return;
-        } 
-             
-        console.log("Хеш пароля - " + "<" + sha256(password.value) + ">");
+        const passwordHash = sha256(password);
+        const jsonPasLog = JSON.stringify({login,passwordHash});
+        console.log("Хеш пароля - " + "<" + passwordHash + ">");
+        console.log("Данные в json - " + "<" + jsonPasLog + ">");
+        checkLogin(login, jsonPasLog)
     })
+    function checkLogin(login, json){
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', 'http://127.0.0.1:5000/users/'+login, true);
+    
+        xhr.onload = (e) => {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    console.log(xhr.responseText);
+                    if(xhr.responseText == "false")
+                        register(json);
+                    else
+                        return;
+                }
+                else {
+                    console.error(xhr.statusText);
+                }
+            }
+        };
+        xhr.onerror = (e) => {
+            console.error(xhr.statusText);
+            alert("Сервер не отвечает. Регистрация невозможна.")
+        };
+        xhr.send();
+    }
+    function register(json){
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', 'http://127.0.0.1:5000/users/newUser', true);
+    
+        xhr.onload = (e) => {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    console.log(xhr.responseText);
+                    alert('Регистрация прошла успешно')
+                }
+                else {
+                    console.error(xhr.statusText);
+                }
+            }
+        };
+        xhr.onerror = (e) => {
+            console.error(xhr.statusText);
+            alert("Сервер не отвечает. Регистрация невозможна.")
+        };
+        xhr.send(json);
+    }
+
+    
     backMainBtn.addEventListener('click', (e) => {
         e.preventDefault();
         window.location.href = '/frontend/html/index.html';
