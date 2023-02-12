@@ -1,4 +1,4 @@
-import pymorphy2 as pymorphy
+import pymorphy3 as pymorphy
 
 
 class RegexCreator:

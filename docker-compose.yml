@@ -1,16 +1,15 @@
 version: '3'
 services: 
-    flask_conteiner:
+    flask:
         container_name: backend
         build:
             context: .
             dockerfile: ./docker/Dockerfile
-        extra_hosts:
-            - "host.docker.internal:host-gateway"
         command: flask run --host=0.0.0.0
         environment: 
             - FLASK_APP=./backend/server.py
             - FLASK_DEBUG=1
+            - POSTGRES_URL= "http://POSTGRES:5432"
         ports: 
              - "5000:5000"
         volumes: 
@@ -21,8 +20,9 @@ services:
                   cpus: '2'
                   memory: '2G'
         networks:
-            - postgres
-    postgres_conteiner:
+            - connector
+
+    postgres:
         container_name: database
         image: postgres:15.1-alpine
         environment:
@@ -47,8 +47,22 @@ services:
                   cpus: '2'
                   memory: '2G'
         networks:
+            - connector
+        
+    pgadmin:
+        image: dpage/pgadmin4
+        depends_on:
             - postgres
+        ports:
+            - "5555:80"
+        environment:
+            PGADMIN_DEFAULT_EMAIL: admin@admin.ru
+            PGADMIN_DEFAULT_PASSWORD: admin
+            POSTGRES_URL: http://POSTGRES:5432
+        restart: unless-stopped
+        networks:
+            - connector
 
 networks:
-  postgres:
+  connector:
     driver: bridge
