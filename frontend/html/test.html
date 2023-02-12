@@ -8,12 +8,20 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/frontend/css/inject_styles.css">
     <title>Test</title>
 </head>
 
 <body>
-    <span class="inject-text" text="DEFAULT TEXT" hover-text="NEW TEXT FROM ATTRIBUTE"></span>
+    <div>
+        <span>
+
+            <span style="background-color:#ff0000" onMouseOver="this.innerHTML='bitch'" onMouseOut="this.innerHTML='HIDEN WORD'">HIDEN WORD</span>
+
+        </span> 
+            
+        
+
+    </div>
 
     <script src="/frontend/js/background.js"></script>
 </body>

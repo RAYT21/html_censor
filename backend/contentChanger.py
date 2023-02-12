@@ -13,15 +13,9 @@ class ContentChanger:
     def readSettings():
         return
 
-class PullSettings():
-
-    def __init__(self):         
-        self.typeHidding 
-        self.regexAnalys
-        self.modelAnalys
-
-    def setSettings():
+    def changeContent(user_id, analize_text):
         return
+
 
 
      
