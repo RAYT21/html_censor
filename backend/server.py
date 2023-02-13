@@ -46,14 +46,15 @@ class AccauntWordsGet(Resource):
 		return make_response(jsonify({'result': result}), 200)
 		 
 
-@accountSpace.route("/registration/<login>&<password_hash>",methods=['GET'])
+@accountSpace.route("/registration",methods=['POST'])
 class AccauntRegister(Resource):
 	@cross_origin()
-	def get(self,login,password_hash):
+	def get(self):
 		try:
-			result = DataBase.getUserId(login)
+			request_data = request.get_json()
+			result = DataBase.getUserId(request_data['login'])
 			if result == "":
-				result = DataBase.saveNewUser(login,password_hash)
+				result = DataBase.saveNewUser(request_data['login'], request_data['password_hash'])
 			else:
 				result = -1
 		except:
@@ -61,25 +62,29 @@ class AccauntRegister(Resource):
 		return make_response(jsonify({'result': result}), 200)
 
 
-@accountSpace.route("/authorization/<login>&<password_hash>",methods=['GET'])
+@accountSpace.route("/authorization",methods=['POST'])
 class AccauntAuth(Resource):
 	@cross_origin()
-	def get(self,login,password_hash):
+	def get(self):
 		try:
-			user_info = DataBase.findUser(login)
-			if user_info[1]==login and user_info[2]==password_hash:
+			request_data = request.get_json()
+			user_info = DataBase.findUser(request_data['login'])
+			if user_info[1]==request_data['login'] and user_info[2]==request_data['password_hash']:
 				return user_info[0]
+			else:
+				result = -1
 
 		except:
 			result = -1
 		return make_response(jsonify({'result': result}), 200)
 
-@accountSpace.route("/settings/<user_id>&<json>",methods=['GET'])
+@accountSpace.route("/settings",methods=['POST'])
 class AccauntSettingsUpdage(Resource):
 	@cross_origin()
-	def get(self,user_id,json):
+	def get(self):
 		try:
-			result = DataBase.updateUserSettings(user_id, json)
+			request_data = request.get_json()
+			result = DataBase.updateUserSettings(request_data['user_id'], request_data['settings'])
 		except:
 			result = False
 		return make_response(jsonify({'result': result}), 200)
@@ -105,16 +110,3 @@ class AnalizeContentFromJSON(Resource):
 		except:
 			result = False
 		return make_response(jsonify({'result': result}), 200)
-
-
-
-
-
-
-
-		 
-
-
-
-
-	
