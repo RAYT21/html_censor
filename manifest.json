@@ -2,7 +2,7 @@
   "background.service_worker": {
     "persistent": false,
     "scripts": [
-      "./js/background.js"
+      "./frontend/js/background.js"
     ]
   },
   "content_scripts": [
@@ -11,20 +11,20 @@
         "<all_urls>"
       ],
       "js": [
-        "/js/dictionary_scripts.js",
-        "/js/registration.js"
+        "/frontend/js/dictionary.js",
+        "/frontend/js/registration.js"
       ]
     }
   ],
   "action": {
-    "default_icon": "/img/icon.png",
-    "default_popup": "/html/index.html",
+    "default_icon": "/frontend/img/icon.png",
+    "default_popup": "/frontend/html/index.html",
     "default_title": "Saver",
     "icons": {
-      "128":"/img/icon.png",
-      "16": "/img/icon.png",
-      "32": "/img/icon.png",
-      "48": "/img/icon.png"
+      "128":"/frontend/img/icon.png",
+      "16": "/frontend/img/icon.png",
+      "32": "/frontend/img/icon.png",
+      "48": "/frontend/img/icon.png"
     }
   },
 
