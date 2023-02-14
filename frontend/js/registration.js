@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const backMainBtn = document.querySelector('.back-btn');
     const regBtn = document.querySelector('#register');
     const authInputs = document.querySelectorAll('.logField');
+    
     regBtn.addEventListener('click', (e)=>{
         e.preventDefault();
         const login = authInputs[0].value;
@@ -14,52 +15,34 @@ document.addEventListener('DOMContentLoaded', () => {
         const jsonPasLog = JSON.stringify({login,passwordHash});
         console.log("Хеш пароля - " + "<" + passwordHash + ">");
         console.log("Данные в json - " + "<" + jsonPasLog + ">");
-        checkLogin(login, jsonPasLog)
+        reg(login, passwordHash)
     })
-    function checkLogin(login, json){
+    function reg(login, passwordHash){
         const xhr = new XMLHttpRequest();
-        xhr.open('GET', 'http://127.0.0.1:5000/users/'+login, true);
+        xhr.open('GET', 'http://127.0.0.1:5000/accountManager/registration/'+ login + '&' + passwordHash, true);
     
         xhr.onload = (e) => {
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
+                    if(JSON.parse(xhr.responseText).result == -1)
+                        alert("Введённый логин уже используется.");
+                    else{
+                        alert("Регистрация прошла успешно! Войдите в аккаунт.");
+                        window.location.href = '/frontend/html/index.html';
+                    }
                     console.log(xhr.responseText);
-                    if(xhr.responseText == "false")
-                        register(json);
-                    else
-                        return;
                 }
                 else {
                     console.error(xhr.statusText);
+                    alert("Сервер временно не доступен. Регистрация невозможна.")
                 }
             }
         };
         xhr.onerror = (e) => {
             console.error(xhr.statusText);
-            alert("Сервер не отвечает. Регистрация невозможна.")
+            alert("Сервер временно не доступен. Регистрация невозможна.")
         };
         xhr.send();
-    }
-    function register(json){
-        const xhr = new XMLHttpRequest();
-        xhr.open('POST', 'http://127.0.0.1:5000/users/newUser', true);
-    
-        xhr.onload = (e) => {
-            if (xhr.readyState === 4) {
-                if (xhr.status === 200) {
-                    console.log(xhr.responseText);
-                    alert('Регистрация прошла успешно')
-                }
-                else {
-                    console.error(xhr.statusText);
-                }
-            }
-        };
-        xhr.onerror = (e) => {
-            console.error(xhr.statusText);
-            alert("Сервер не отвечает. Регистрация невозможна.")
-        };
-        xhr.send(json);
     }
 
     
@@ -67,5 +50,4 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         window.location.href = '/frontend/html/index.html';
     });
-    
 });

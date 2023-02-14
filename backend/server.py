@@ -68,7 +68,9 @@ class AccauntAuth(Resource):
 		try:
 			user_info = DataBase.findUser(login)
 			if user_info[1]==login and user_info[2]==password_hash:
-				return user_info[0]
+				result = user_info[0]
+			else:
+				result = -1
 
 		except:
 			result = -1
