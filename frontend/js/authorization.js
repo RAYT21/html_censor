@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         window.location.href = '/frontend/html/menu.html';
                         localStorage["login"] = login;
                         localStorage["user_id"] = JSON.parse(xhr.responseText).result;
+                        
                     }
                     console.log(xhr.responseText);
                 }
@@ -44,9 +45,11 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         xhr.send();
     }
+    
     if(localStorage.getItem("login") != null && localStorage.getItem("user_id") != null){
         window.location.href = '/frontend/html/menu.html';
     }
+
 
     // Мусор -----------------------------------------
     // const infoDs = document.querySelector('.card');

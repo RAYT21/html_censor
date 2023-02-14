@@ -8,13 +8,32 @@ document.addEventListener('DOMContentLoaded', () => {
     const backMainBtn = document.querySelector('#back-to-main');
     const exportBtn = document.querySelector('.export-btn');
 
-
+    onLoad();
     // Add and remove words
 
     plusBtn.addEventListener('click', (e) => {
         e.preventDefault();
         addWord();
     });
+    function onLoad(){
+        const words = JSON.parse(localStorage.getItem("words")).result;
+        for(let i = 0; i < words.length; i++){
+            const wordBox = document.createElement('div');
+            wordBox.classList.add('logField', 'word');
+            const word = words[i];
+            wordBox.textContent = word;
+            wordsParent.append(wordBox);
+            wordBox.addEventListener('mouseenter', () => {
+                wordBox.classList.add('red');
+            });
+            wordBox.addEventListener('mouseleave', () => {
+                wordBox.classList.remove('red');
+            });
+            wordBox.addEventListener('click', () => {
+                wordBox.remove();
+            });
+        }
+    }
     function addWord(){
         if (wordInput.value != '') {
             const wordBox = document.createElement('div');
@@ -22,26 +41,33 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log(wordInput.value);
             const word = wordInput.value;
             const xhr = new XMLHttpRequest();
-            xhr.open('GET', 'http://127.0.0.1:5000/regexGenerator/'+wordInput.value, true);
+            xhr.open('GET', 'http://127.0.0.1:5000/accountManager/words/' + localStorage.getItem("user_id") + "&" + wordInput.value, true);
     
             xhr.onload = (e) => {
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
-                        console.log(xhr.responseText);
-                        wordBox.textContent = word;
-                        wordsParent.append(wordBox);
+                        if(JSON.parse(xhr.responseText).result == true){
+                            console.log(xhr.responseText);
+                            wordBox.textContent = word;
+                            wordsParent.append(wordBox);
+                            localStorage["words"] = JSON.stringify(JSON.parse(localStorage.getItem("words")).add(word));
         
-                        wordInput.value = '';
+                            wordInput.value = '';
 
-                        wordBox.addEventListener('mouseenter', () => {
-                            wordBox.classList.add('red');
-                        });
-                        wordBox.addEventListener('mouseleave', () => {
-                            wordBox.classList.remove('red');
-                        });
-                        wordBox.addEventListener('click', () => {
-                            wordBox.remove();
-                        });
+                            wordBox.addEventListener('mouseenter', () => {
+                                wordBox.classList.add('red');
+                            });
+                            wordBox.addEventListener('mouseleave', () => {
+                                wordBox.classList.remove('red');
+                            });
+                            wordBox.addEventListener('click', () => {
+                                wordBox.remove();
+                            });
+                        }
+                        else{
+                            alert("Ошибка сервера, слово не было создано.");
+                        }
+
                     }
                     else {
                         console.error(xhr.statusText);
