@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const backMainBtn = document.querySelector('.back-btn');
     const regBtn = document.querySelector('#register');
     const authInputs = document.querySelectorAll('.logField');
+
     regBtn.addEventListener('click', (e)=>{
         e.preventDefault();
         const login = authInputs[0].value;
@@ -16,6 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log("Данные в json - " + "<" + jsonPasLog + ">");
         checkLogin(login, jsonPasLog)
     })
+    
     function checkLogin(login, json){
         const xhr = new XMLHttpRequest();
         xhr.open('GET', 'http://127.0.0.1:5000/users/'+login, true);
