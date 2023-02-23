@@ -23,6 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                     else{
                         localStorage["words"] = xhr.responseText;
+                        chrome.storage.local.set({ "words": xhr.responseText})
                     }
                     console.log(xhr.responseText);
                 }

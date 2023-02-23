@@ -5,11 +5,10 @@
 chrome.tabs.onUpdated.addListener(onUpdated);
 function onUpdated(tabId, changeInfo,tab){
     chrome.storage.local.get("user_id").then((result) => {
-        console.log("Value currently is " + result.user_id);
         if(result.user_id != "-1"){
             chrome.scripting.executeScript(
                 {
-                    target:{tabId: tabId, allFrames: true},
+                    target:{tabId: tabId, allFrames:true},
                     files:["/frontend/js/inject_scripts.js"]
                 }
             )
@@ -20,7 +19,7 @@ function onUpdated(tabId, changeInfo,tab){
                 }
             )
         }
-      });
+    });
 }
 // function filter() {
 //     const images = document.querySelectorAll("p, h2, h1, a, h3");
