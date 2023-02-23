@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     authBtn = document.querySelector('.enter-button');
     authInputs = document.querySelectorAll('.logField');
     loginDivs = document.querySelectorAll('.userInfo');
-
+    const log = document.querySelector(".card")
     authBtn.addEventListener('click', (e) => {
         const login = authInputs[0].value;
         const password = authInputs[1].value;
@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         window.location.href = '/frontend/html/menu.html';
                         localStorage["login"] = login;
                         localStorage["user_id"] = JSON.parse(xhr.responseText).result;
-                        
+                        chrome.storage.local.set({ "user_id": JSON.parse(xhr.responseText).result})
                     }
                     console.log(xhr.responseText);
                 }

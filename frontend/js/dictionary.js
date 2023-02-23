@@ -16,8 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
         addWord();
     });
     function onLoad(){
-        const words = JSON.parse(localStorage.getItem("words")).result;
-        for(let i = 0; i < words.length; i++){
+        if(localStorage.getItem("words") != null)
+        {
+            const words = JSON.parse(localStorage.getItem("words")).result;
+            for(let i = 0; i < words.length; i++){
             const wordBox = document.createElement('div');
             wordBox.classList.add('logField', 'word');
             const word = words[i];
@@ -31,7 +33,9 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             wordBox.addEventListener('click', () => {
                 wordBox.remove();
-            });
+                });
+            }
+        
         }
     }
     function addWord(){

@@ -1,6 +1,6 @@
-const minLengthLogin = 4;
+const minLengthLogin = 1;
 const maxLengthLogin = 30;
-const minLengthPassword = 13;
+const minLengthPassword = 1;
 const maxLengthPassword = 40;
 function checkData(loginVal,passwordVal){
     if(!(loginVal.length >= minLengthLogin && loginVal.length <= maxLengthLogin && passwordVal.length >= minLengthPassword && passwordVal.length <= maxLengthPassword)){

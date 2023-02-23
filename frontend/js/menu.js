@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem("login");
         localStorage.removeItem("user_id");
         localStorage.removeItem("words");
+        chrome.storage.local.set({ "user_id": "-1"})
         window.location.href = '/frontend/html/index.html';
     });
     getUserWords(localStorage.getItem("user_id"));
@@ -17,8 +18,9 @@ document.addEventListener('DOMContentLoaded', () => {
         xhr.onload = (e) => {
             if (xhr.readyState === 4) {
                 if (xhr.status === 200) {
-                    if(JSON.parse(xhr.responseText).result == false)
-                        alert("Не удалось загрузить слова.");
+                    if(JSON.parse(xhr.responseText).result == false){
+
+                    }
                     else{
                         localStorage["words"] = xhr.responseText;
                     }

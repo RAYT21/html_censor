@@ -1,3 +1,13 @@
 .inject-text{
   background-color: red;
 }
+.load-text{
+  font-size: xx-large;
+  padding: 1rem;
+  max-width: 200px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: skyblue;
+}
