@@ -22,8 +22,8 @@ function onUpdated(tabId, changeInfo,tab){
     });
 }
 // function filter() {
-//     const images = document.querySelectorAll("p, h2, h1, a, h3");
-//     console.log(images.length);
+//     const images =  поапоапоалпола document.querySelectorAll("p, h2, h1, a, h3");
+//     console.log( поапоапоалпола images.length);
 //     for(let i = 0; i < images.length; i++){
 //         images[i].textContent = "цензура";
 //     } 

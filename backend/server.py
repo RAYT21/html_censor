@@ -35,6 +35,16 @@ class WordSaver(Resource):
 			result = False
 		return make_response(jsonify({'result': result}), 200)
 
+@accountSpace.route("/deleteWord/<user_id>&<word>",methods=['GET'])
+class WordDeleter(Resource):
+	@cross_origin()
+	def get( self, user_id, word):
+		try:
+			result = DataBase.deleteWord( user_id, word)
+		except:
+			result = False
+		return make_response(jsonify({'result': result}), 200)
+
 @accountSpace.route("/words/<user_id>",methods=['GET'])
 class AccauntWordsGet(Resource):
 	@cross_origin()

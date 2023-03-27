@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     authBtn = document.querySelector('.enter-button');
     authInputs = document.querySelectorAll('.logField');
-    loginDivs = document.querySelectorAll('.userInfo');
+    loginDivs = document.querySelectorAll('.userInfo');     
     const log = document.querySelector(".card")
     authBtn.addEventListener('click', (e) => {
         const login = authInputs[0].value;

@@ -11,7 +11,7 @@ CREATE TABLE regular_exceptions(
     id SERIAL NOT NULL PRIMARY KEY,
     user_id INTEGER NULL REFERENCES users(id),
     word VARCHAR(255) NOT NULL,
-    regular_exception VARCHAR(255) NOT NULL
+    regular_exception VARCHAR(10000) NOT NULL
 );
 
 CREATE TABLE settings(

@@ -41,7 +41,7 @@ class DataBase:
         print("vseOKK 2")
         conn.commit()
         print("vseOKK 3")
-
+ 
         user_id = DataBase.getUserId(cur,login)
         
         print("vseOKK 4")
@@ -96,11 +96,27 @@ class DataBase:
 
         return True
 
+
+    def deleteWord(user_id: int, word: str):
+        conn = DataBase.getConnection()
+        cur = conn.cursor()
+
+        cur.execute("""
+        DELETE FROM regular_exceptions WHERE user_id=%(user_id)s AND word=%(word)s;
+        """,
+        {'user_id': user_id, 'word': word})
+        
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        return True
+    
+
     def saveImportingDictWords(user_id: int, words):
         conn = DataBase.getConnection()
         cur = conn.cursor()
 
-        
         for let in words:
             cur.execute("""
             INSERT INTO regular_exceptions (user_id, word, regular_exception) 

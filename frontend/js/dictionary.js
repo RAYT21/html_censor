@@ -5,7 +5,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const wordInput = document.querySelector('.add-word');
     const backMenuBtn = document.querySelector('#back-to-menu');
     const importBtn = document.querySelector('.import-btn');
-    const backMainBtn = document.querySelector('#back-to-main');
     const exportBtn = document.querySelector('.export-btn');
 
     onLoad();
@@ -18,7 +17,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function onLoad(){
         if(localStorage.getItem("words") != null)
         {
-            const words = JSON.parse(localStorage.getItem("words")).result;
+            console.log(localStorage.getItem("words"))
+            const words = localStorage.getItem("words").split(',');
             for(let i = 0; i < words.length; i++){
             const wordBox = document.createElement('div');
             wordBox.classList.add('logField', 'word');
@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 wordBox.classList.remove('red');
             });
             wordBox.addEventListener('click', () => {
-                wordBox.remove();
+                deleteWord(wordBox);
                 });
             }
         
@@ -51,21 +51,20 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (xhr.readyState === 4) {
                     if (xhr.status === 200) {
                         if(JSON.parse(xhr.responseText).result == true){
+                            wordInput.value = '';
                             console.log(xhr.responseText);
                             wordBox.textContent = word;
                             wordsParent.append(wordBox);
-                            localStorage["words"] = JSON.stringify(JSON.parse(localStorage.getItem("words")).add(word));
+                            localStorage["words"] = (localStorage.getItem("words") == null ? word : localStorage.getItem("words") +','+word) ;
         
-                            wordInput.value = '';
-
                             wordBox.addEventListener('mouseenter', () => {
                                 wordBox.classList.add('red');
                             });
                             wordBox.addEventListener('mouseleave', () => {
-                                wordBox.classList.remove('red');
+                               wordBox.classList.remove('red');
                             });
                             wordBox.addEventListener('click', () => {
-                                wordBox.remove();
+                               deleteWord(wordBox);
                             });
                         }
                         else{
@@ -89,21 +88,53 @@ document.addEventListener('DOMContentLoaded', () => {
             console.log('ne ok');
         }
     }
+    function deleteWord(wordBox){
+        word = wordBox.textContent
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', 'http://127.0.0.1:5000/accountManager/deleteWord/' + localStorage.getItem("user_id") + "&" + word, true);
+
+        xhr.onload = (e) => {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    if(JSON.parse(xhr.responseText).result == true){
+                        console.log(xhr.responseText);
+
+                        let wordsInStorage = localStorage.getItem("words").split(',')
+                        let resultArray = []
+                        wordsInStorage.forEach(element => {
+                            if (element != word) {
+                                resultArray.push(element)
+                            }
+                        }); 
+                        if (resultArray.length > 0){
+                            localStorage["words"] = resultArray
+                        } else {
+                            localStorage.removeItem("words")
+                        } 
+                        wordBox.remove();
+                    }
+                    else{
+                        alert("Ошибка сервера, слово не было удалено.");
+                    }
+
+                }
+                else {
+                    console.error(xhr.statusText);
+                }
+            }
+        };
+        xhr.onerror = (e) => {
+            console.error(xhr.statusText);
+            alert("Слово - <" + word + "> не было удалено - сервер не отвечает.")
+        };
+        xhr.send();
+    } 
     backMenuBtn.addEventListener('click', (e) => {
         e.preventDefault();
         window.location.href = '/frontend/html/menu.html';
     });
 });
 
-
-
-function parseJsonByRegex(){
-    
-}
-
-function addRegexInStorage(){
-
-}
 
 
 

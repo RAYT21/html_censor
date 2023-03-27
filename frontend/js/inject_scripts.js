@@ -22,6 +22,7 @@ async function assync(){
     }
     for (let j = 0; j < doc.length; j++) {
         splitter = doc[j].innerHTML.split(">");
+        console.log(wordsHide.result)
         for (let i = 0; i < splitter.length; i++) {
             for (let k = 0; k < wordsHide.result.length; k++) {
                 try{
@@ -92,7 +93,6 @@ async function assync(){
                     }
                     bufContent = content;
                     for (let y = 0; y < doc[j].children.length; y++) {  
-                        // console.log(y+".Children - [" + doc[j].children[y].textContent + "] textContent - [" + doc[j].textContent + "] indexOf - ["+ bufContent.indexOf(doc[j].children[y].textContent)+ "].");
                     
                         if(bufContent.indexOf(doc[j].children[y].textContent) != 0){
                             if(bufContent.substring(0, bufContent.indexOf(doc[j].children[y].textContent)).includes(wordsHide.result[k])){

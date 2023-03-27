@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem("login");
         localStorage.removeItem("user_id");
         localStorage.removeItem("words");
-        chrome.storage.local.set({ "user_id": "-1"})
+        chrome.storage.local.set({ "user_id": -1});
         window.location.href = '/frontend/html/index.html';
     });
     getUserWords(localStorage.getItem("user_id"));
@@ -22,10 +22,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     }
                     else{
-                        localStorage["words"] = xhr.responseText;
-                        chrome.storage.local.set({ "words": xhr.responseText})
+                        let array =  JSON.parse(xhr.responseText);
+                        localStorage["words"] = array.result;
+                        chrome.storage.local.set({ "words": xhr.responseText});
                     }
-                    console.log(xhr.responseText);
                 }
                 else {
                     console.error(xhr.statusText);
@@ -34,7 +34,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         };
         xhr.onerror = (e) => {
-            console.error(xhr.statusText);
             alert("Сервер временно не доступен. Загрузка слов невозможна.")
         };
         xhr.send();
