@@ -17,23 +17,25 @@ CREATE TABLE regular_exceptions(
 CREATE TABLE settings(
     id SERIAL NOT NULL PRIMARY KEY,
     user_id INTEGER NOT NULL REFERENCES users(id),
-    settings_json JSONB NOT NULL
+    settings VARCHAR(255) NOT NULL
 );
     
-CREATE TABLE ml_models(
+CREATE TABLE statistic(
     id SERIAL NOT NULL PRIMARY KEY ,
     user_id INTEGER NULL REFERENCES users(id),
-    path_to_model VARCHAR(100) NOT NULL
+    website_url VARCHAR(255) NOT NULL
+    counter_banned_words VARCHAR(255) NOT NULL
+    banned_words JSONB NOT NULL
 );
 
 INSERT INTO users(login, password_hash) VALUES ('Admin', 'Admin');
 INSERT INTO regular_exceptions(user_id, word, regular_exception) VALUES (1,'Admin', 'Admin');
 INSERT INTO regular_exceptions(user_id, word, regular_exception) VALUES (1,'Fart', 'AJami');
 INSERT INTO regular_exceptions(user_id, word, regular_exception) VALUES (1,'Nme', 'Nemo');
-INSERT INTO settings(user_id, settings_json) VALUES (1, '{"dog": "cat", "frog": "frat"}');
-INSERT INTO ml_models(user_id, path_to_model) VALUES (1, '/Admin/my/path/to');
+INSERT INTO settings(user_id, settings) VALUES (1, '1111');
+INSERT INTO statistic(user_id, path_to_model) VALUES (1, '{"cat": "dog", "flag": "tag"}');
 
 INSERT INTO users(login, password_hash) VALUES ('Nimda', 'Nimda');
 INSERT INTO regular_exceptions(user_id, word, regular_exception) VALUES (2,'Nimda', 'Nimda');
-INSERT INTO settings(user_id, settings_json) VALUES (2, '{"cat": "dog", "flag": "tag"}');
-INSERT INTO ml_models(user_id, path_to_model) VALUES (2, '/Nimda/my/path/to');
+INSERT INTO settings(user_id, settings) VALUES (2, '1111');
+INSERT INTO statistic(user_id, path_to_model) VALUES (2, '{"cat": "dog", "flag": "tag"}');

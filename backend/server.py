@@ -19,7 +19,7 @@ app.config['JSON_AS_ASCII'] = False
 
 contentSpace = api.namespace('contentChanger', description='DBworker')
 accountSpace = api.namespace('accountManager', description='ManagingAccount')
-
+accountSpace = api.namespace('userStatistic', description='UserStatistic')
 
 @accountSpace.route("/words/<user_id>&<word>",methods=['GET'])
 class WordSaver(Resource):
@@ -51,6 +51,16 @@ class AccauntWordsGet(Resource):
 	def get(self,user_id):
 		try:
 			result = DataBase.getUserWords(user_id)
+		except:
+			result = False
+		return make_response(jsonify({'result': result}), 200)
+	
+@accountSpace.route("/statistic/<user_id>",methods=['POST'])
+class StatisticPOST(Resource):
+	@cross_origin()
+	def get(self,user_id):
+		try:
+			result = DataBase.getUserStatistic(user_id)
 		except:
 			result = False
 		return make_response(jsonify({'result': result}), 200)
@@ -113,10 +123,12 @@ class AnalizeContentFromJSON(Resource):
 	def get(self):
 		try:
 			request_data = request.get_json()
-			result = ContentChanger.changeContent(request_data['user_id'], request_data['analize_text'])
+			result = ContentChanger.getChangedHTML(request_data['user_id'], request_data['analize_text'])
+			result_response = True
 		except:
-			result = False
-		return make_response(jsonify({'result': result}), 200)
+			result_response = False
+			result = ""
+		return make_response(jsonify({'result': result, 'result_response': result_response}), 200)
 
 
 

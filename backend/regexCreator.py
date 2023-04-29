@@ -54,17 +54,10 @@ class RegexCreator:
         morph = pymorphy.MorphAnalyzer()
         array = []
         for i in morph.parse(word):
-            #print(i)
             for n in i.lexeme:
-                #print(n.word,end=' ')
                 if n.word not in array: 
                     array.append(n.word)
-            #print('\n')
-
-        #print(array)
         subarray = [[]]
-        #print(subarray)
-        #indx = 0
 
         for i in range(0, len(array)):
             for j in range(0, len(array[i])):
@@ -76,8 +69,6 @@ class RegexCreator:
                     subarray[j].append(array[i][j])
 
         min_len = len(min(array, key=len))
-        #print(min_len)
-        #print(subarray)
 
         regex_string = ''
 

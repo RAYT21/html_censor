@@ -2,8 +2,6 @@ from inspect import getcallargs
 from multipledispatch import dispatch
 import psycopg2 as postgre
 from regexCreator import RegexCreator
-from contextAnalizer import ContextAnalizer
-import requests
 
 
 class DataBase:
@@ -60,16 +58,16 @@ class DataBase:
         
 
 
-    def updateUserSettings(user_id: int, settings_json: str):
+    def updateUserSettings(user_id: int, settings: str):
         conn = DataBase.getConnection()
         cur = conn.cursor()
 
         cur.execute("""
         UPDATE settings 
-        SET settings_json = %(settings_json)s)
+        SET settings = %(settings)s)
         WHERE user_id = %(user_id)s;
         """,
-        {'user_id': user_id, 'settings_json': settings_json})
+        {'user_id': user_id, 'settings': settings})
 
         conn.commit()
         cur.close()
@@ -129,27 +127,6 @@ class DataBase:
         conn.close()
 
 
-
-
-    def saveModel(user_id: int):
-        conn = DataBase.getConnection()
-        cur = conn.cursor()
-
-        path_to_model = ContextAnalizer.setPath() ################# change it
-
-        cur.execute("""
-        INSERT INTO ml_models (user_id, path_to_model) 
-        VALUES (%(user_id)s, %(path_to_model)s);
-        """,
-        {'user_id': user_id,'path_to_model': path_to_model})
-        
-        conn.commit()
-        cur.close()
-        conn.close()
-
-
-# get data methods
-
     @dispatch(str)
     def getUserId(login: str):
         conn = DataBase.getConnection()
@@ -208,21 +185,6 @@ class DataBase:
         table_data = cur.fetchall()
         for num, row in enumerate(table_data):
             result.append(row[0])
-        cur.close()
-        conn.close()
-        return result
-
-    def getUserRegEx(user_id: int):
-        conn = DataBase.getConnection()
-        cur = conn.cursor()
-
-        cur.execute("""
-        SELECT word FROM regular_exceptions 
-        WHERE user_id = %(user_id)s;
-        """,
-        {'user_id': user_id})
-
-        result = cur.fetchone()
         cur.close()
         conn.close()
         return result
@@ -289,5 +251,36 @@ class DataBase:
         cur.close()
         conn.close()
         return result
+    
+    def getUserStatistic(user_id):
+        conn = DataBase.getConnection()
+        cur = conn.cursor()
+        result = []
+        cur.execute("""
+        SELECT * FROM statistic 
+        WHERE user_id = %(user_id)s;
+        """,
+        {'user_id': user_id})
+        table_data = cur.fetchall()
+        for num, row in enumerate(table_data):
+            result.append(row[0])
+        cur.close()
+        conn.close()
+        return result
+    
+    def saveUserStatistic(user_id, website_url, counter_banned_words, banned_words):
+        conn = DataBase.getConnection()
+        cur = conn.cursor()
 
+        cur.execute("""
+        INSERT INTO statistic (user_id, website_url, counter_banned_words, banned_words) 
+        VALUES (%(user_id)s, %(website_url)s, %(counter_banned_words)s, %(banned_words)s);
+        """,
+        {'user_id': user_id, 'website_url': website_url, 'counter_banned_words': counter_banned_words, 'banned_words': banned_words})
+        
+        conn.commit()
+        cur.close()
+        conn.close()
+
+        return True
 
