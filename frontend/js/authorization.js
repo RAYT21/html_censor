@@ -26,10 +26,13 @@ document.addEventListener('DOMContentLoaded', () => {
                     if(JSON.parse(xhr.responseText).result == -1)
                         alert("Введены неверные данные.");
                     else{
+                        localStorage['set0'] = JSON.parse(xhr.responseText).settings[0]
+                        localStorage['set1'] = JSON.parse(xhr.responseText).settings[1]
+                        localStorage['set2'] = JSON.parse(xhr.responseText).settings[2]
+                        localStorage['set3'] = JSON.parse(xhr.responseText).settings[3]
                         window.location.href = '/frontend/html/menu.html';
                         localStorage["login"] = login;
                         localStorage["user_id"] = JSON.parse(xhr.responseText).result;
-                        chrome.storage.local.set({ "user_id": JSON.parse(xhr.responseText).result})
                     }
                     console.log(xhr.responseText);
                 }
@@ -50,53 +53,4 @@ document.addEventListener('DOMContentLoaded', () => {
         window.location.href = '/frontend/html/menu.html';
     }
 
-
-    // Мусор -----------------------------------------
-    // const infoDs = document.querySelector('.card');
-    // infoDs.addEventListener('click', (e)=>{
-    //     chrome.tabs.query({active: true}, (tabs) => {
-    //         const tab = tabs[0];
-    //         if (tab) {
-    //             chrome.scripting.executeScript(
-    //                 {
-    //                     target:{tabId: tab.id, allFrames: true},
-    //                     func:grabImages
-    //                 },
-    //                 onResult
-    //             )
-    //         } else {
-    //             alert("There are no active tabs")
-    //         }
-    //     })
-    // })
-    // function grabImages() {
-    //     const images = document.querySelectorAll("p, h2, h1, a, h3");
-    //     console.log(images.length);
-    //     for(let i = 0; i < images.length; i++){
-    //         images[i].textContent = "000";
-    //     }
-        
-
-    //     return Array.from(images).map(image=>image.textContent);    
-    // }
-    // function onResult(frames) {
-    //     // Если результатов нет
-    //     if (!frames || !frames.length) { 
-    //         alert("Could not retrieve images from specified page");
-    //         return;
-    //     }
-    //     // Объединить списки URL из каждого фрейма в один массив
-    //     const imageUrls = frames.map(frame=>frame.result)
-    //                         .reduce((r1,r2)=>r1.concat(r2));
-    //     // Скопировать в буфер обмена полученный массив  
-    //     // объединив его в строку, используя возврат каретки 
-    //     // как разделитель  
-    //     window.navigator.clipboard
-    //         .writeText(imageUrls.join("\n"))
-    //         .then(()=>{
-    //             // закрыть окно расширения после 
-    //             // завершения
-    //         });
-    // }
-    // Мусор -----------------------------------------
 });

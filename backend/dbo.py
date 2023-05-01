@@ -12,7 +12,7 @@ class DataBase:
     DB_PASSWORD = 'admin'
     DB_PORT = '5432'
 
-    DEFAULT_JSON = '{"jojo": "mail"}'
+    DEFAULT_JSON = '1111'
 
 
 
@@ -44,10 +44,10 @@ class DataBase:
         
         print("vseOKK 4")
         cur.execute("""
-        INSERT INTO settings (user_id, settings_json) 
-        VALUES (%(user_id)s, %(settings_json)s);
+        INSERT INTO settings (user_id, settings) 
+        VALUES (%(user_id)s, %(settings)s);
         """,
-        {'user_id': user_id, 'settings_json': DataBase.DEFAULT_JSON})
+        {'user_id': user_id, 'settings': DataBase.DEFAULT_JSON})
 
         print("vseOKK 5")
         conn.commit()
@@ -64,7 +64,7 @@ class DataBase:
 
         cur.execute("""
         UPDATE settings 
-        SET settings = %(settings)s)
+        SET settings = %(settings)s
         WHERE user_id = %(user_id)s;
         """,
         {'user_id': user_id, 'settings': settings})
@@ -195,7 +195,7 @@ class DataBase:
 
 
         cur.execute("""
-        SELECT settings_json FROM settings 
+        SELECT settings FROM settings 
         WHERE user_id = %(user_id)s;
         """,
         {'user_id': user_id})
@@ -263,10 +263,13 @@ class DataBase:
         {'user_id': user_id})
         table_data = cur.fetchall()
         for num, row in enumerate(table_data):
-            result.append(row[0])
+            result.append(row)
+
+        res_bool = False if  result is [] else True
+
         cur.close()
         conn.close()
-        return result
+        return result, res_bool
     
     def saveUserStatistic(user_id, website_url, counter_banned_words, banned_words):
         conn = DataBase.getConnection()

@@ -14,6 +14,10 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         addWord();
     });
+    exportBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        getUserStatistic();
+    });
     function onLoad(){
         if(localStorage.getItem("words") != null)
         {
@@ -37,6 +41,32 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         
         }
+    }
+    async function getUserStatistic(){
+        let response = await fetch('http://127.0.0.1:5000/userStatistic/statistic/'+ localStorage.getItem("user_id"))
+        let commit =  await response.json()
+
+        if (commit.res_bool == 'False'){
+            alert(commit.result)
+            return
+        }  
+
+        const download = (jsoniiii, filename) => {
+            const data = JSON.stringify(jsoniiii)
+            const link = document.createElement('a')
+        
+            link.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(data))
+            link.setAttribute('download', filename || 'data.json')
+            link.style.display = 'none'
+        
+            document.body.appendChild(link)
+        
+            link.click()
+        
+            document.body.removeChild(link)
+        }
+
+        download(commit.result)
     }
     function addWord(){
         if (wordInput.value != '') {

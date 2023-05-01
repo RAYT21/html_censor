@@ -4,18 +4,12 @@
 // });
 chrome.tabs.onUpdated.addListener(onUpdated);
 function onUpdated(tabId, changeInfo,tab){
-    chrome.storage.local.get("user_id").then((result) => {
+    localStorage.getItem("user_id").then((result) => {
         if(result.user_id != "-1"){
             chrome.scripting.executeScript(
                 {
                     target:{tabId: tabId, allFrames:true},
                     files:["/frontend/js/inject_scripts.js"]
-                }
-            )
-            chrome.scripting.insertCSS(
-                {
-                    target:{tabId: tabId, allFrames:true},
-                    files:["/frontend/css/inject_styles.css"]
                 }
             )
         }

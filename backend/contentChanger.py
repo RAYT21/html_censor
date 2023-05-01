@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 import re
 
-from backend.dbo import DataBase
+from dbo import DataBase
 
 @dataclass
 class Settings:

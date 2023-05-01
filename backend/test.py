@@ -89,7 +89,7 @@ class DataBase:
 
 
         cur.execute("""
-        SELECT settings_json FROM settings 
+        SELECT settings FROM settings 
         WHERE user_id = %(user_id)s;
         """,
         {'user_id': user_id})
@@ -157,10 +157,10 @@ class DataBase:
         print(user_id)
         print("vseOKK 4")
         cur.execute("""
-        INSERT INTO settings (user_id, settings_json) 
-        VALUES (%(user_id)s, %(settings_json)s);
+        INSERT INTO settings (user_id, settings) 
+        VALUES (%(user_id)s, %(settings)s);
         """,
-        {'user_id': user_id, 'settings_json': DataBase.DEFAULT_JSON})
+        {'user_id': user_id, 'settings': DataBase.DEFAULT_JSON})
 
         print("vseOKK 5")
         conn.commit()

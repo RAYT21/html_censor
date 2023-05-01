@@ -19,7 +19,7 @@ app.config['JSON_AS_ASCII'] = False
 
 contentSpace = api.namespace('contentChanger', description='DBworker')
 accountSpace = api.namespace('accountManager', description='ManagingAccount')
-accountSpace = api.namespace('userStatistic', description='UserStatistic')
+statisticSpace = api.namespace('userStatistic', description='UserStatistic')
 
 @accountSpace.route("/words/<user_id>&<word>",methods=['GET'])
 class WordSaver(Resource):
@@ -55,15 +55,17 @@ class AccauntWordsGet(Resource):
 			result = False
 		return make_response(jsonify({'result': result}), 200)
 	
-@accountSpace.route("/statistic/<user_id>",methods=['POST'])
-class StatisticPOST(Resource):
+@statisticSpace.route("/statistic/<user_id>",methods=['GET'])
+class StatisticGet(Resource):
 	@cross_origin()
 	def get(self,user_id):
 		try:
-			result = DataBase.getUserStatistic(user_id)
+			result, res_bool = DataBase.getUserStatistic(user_id)
+			if not res_bool:
+				result = 'Статистика пока не собиралась'
 		except:
 			result = False
-		return make_response(jsonify({'result': result}), 200)
+		return make_response(jsonify({'result': result, 'res_bool': res_bool}), 200)
 		 
 
 @accountSpace.route("/registration/<login>&<password_hash>",methods=['GET'])
@@ -89,12 +91,16 @@ class AccauntAuth(Resource):
 			user_info = DataBase.findUser(login)
 			if user_info[1]==login and user_info[2]==password_hash:
 				result = user_info[0]
+				settings = DataBase.getUserSettings(user_info[0])
 			else:
+				settings = -1
 				result = -1
 
+
 		except:
+			settings = -1
 			result = -1
-		return make_response(jsonify({'result': result}), 200)
+		return make_response(jsonify({'result': result, 'settings': settings}), 200)
 
 @accountSpace.route("/settings/<user_id>&<json>",methods=['GET'])
 class AccauntSettingsUpdage(Resource):
@@ -117,13 +123,13 @@ class AccauntSettingsGet(Resource):
 		return make_response(jsonify({'result': result}), 200)
 
 
-@contentSpace.route("/analize",methods=['POST'])
+@contentSpace.route("/changeContent",methods=['POST'])
 class AnalizeContentFromJSON(Resource):
 	@cross_origin()
 	def get(self):
 		try:
 			request_data = request.get_json()
-			result = ContentChanger.getChangedHTML(request_data['user_id'], request_data['analize_text'])
+			result = ContentChanger.getChangedHTML(request_data['website_url'],request_data['user_id'], request_data['analize_text'])
 			result_response = True
 		except:
 			result_response = False

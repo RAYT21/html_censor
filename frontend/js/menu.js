@@ -7,7 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem("login");
         localStorage.removeItem("user_id");
         localStorage.removeItem("words");
-        chrome.storage.local.set({ "user_id": -1});
+        localStorage.removeItem("set0");localStorage.removeItem("set1");
+        localStorage.removeItem("set2");localStorage.removeItem("set3");
         window.location.href = '/frontend/html/index.html';
     });
     getUserWords(localStorage.getItem("user_id"));
@@ -24,7 +25,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     else{
                         let array =  JSON.parse(xhr.responseText);
                         localStorage["words"] = array.result;
-                        chrome.storage.local.set({ "words": xhr.responseText});
                     }
                 }
                 else {
