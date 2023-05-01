@@ -33,6 +33,13 @@ document.addEventListener('DOMContentLoaded', () => {
                         window.location.href = '/frontend/html/menu.html';
                         localStorage["login"] = login;
                         localStorage["user_id"] = JSON.parse(xhr.responseText).result;
+                        self.chrome.storage.local.set({ user_id: JSON.parse(xhr.responseText).result}).then(() => {
+                            console.log("Value is set to " + value);
+                          });
+                          
+                        self.chrome.storage.local.get(["user_id"]).then((result) => {
+                            console.log("Value currently is " + result.user_id);
+                        });
                     }
                     console.log(xhr.responseText);
                 }

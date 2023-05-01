@@ -1,12 +1,12 @@
 window.onload = function() { 
     console.log('Страница загружена, скрипт заинжектился.');
-    getCensorPage();
+    getCensorPage(user_id);
 };
 
 
 async function getCensorPage(){
     let page = document.innerHTML;
-    let user_id = localStorage.getItem("user_id");
+    let user_id = userr;
     let website_url = document.URL;
 
     let request = {
