@@ -23,8 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 set.checked = false;
             }
-
             const settingString = localStorage.getItem('set0') + localStorage.getItem('set1') + localStorage.getItem('set2') + localStorage.getItem('set3');
+            chrome.storage.local.set({ settings: settingString});
             sendSettings(settingString)
         });
 

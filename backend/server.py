@@ -126,15 +126,14 @@ class AccauntSettingsGet(Resource):
 @contentSpace.route("/changeContent",methods=['POST'])
 class AnalizeContentFromJSON(Resource):
 	@cross_origin()
-	def get(self):
+	def post(self):
 		try:
 			request_data = request.get_json()
-			result = ContentChanger.getChangedHTML(request_data['website_url'],request_data['user_id'], request_data['analize_text'])
+			resp_res = ContentChanger.getChangedHTML(request_data['website_url'],request_data['user_id'], request_data['analize_text'])
 			result_response = True
 		except:
 			result_response = False
-			result = ""
-		return make_response(jsonify({'result': result, 'result_response': result_response}), 200)
+		return make_response(jsonify({'result': resp_res, 'result_response': result_response}), 200)
 
 
 

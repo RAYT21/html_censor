@@ -1,217 +1,126 @@
-from inspect import getcallargs
+from dataclasses import dataclass
 import re
-from multipledispatch import dispatch
-import psycopg2 as postgre
 
-class DataBase:
-
-    DB_HOST = 'localhost'
-    DB_NAME = 'diplomDB'
-    DB_USER = 'admin'
-    DB_PASSWORD = 'admin'
-    DB_PORT = '5432'
-
-    DEFAULT_JSON = '{"jojo": "mail"}'
+from backend.dbo import DataBase
 
 
+@dataclass
+class Settings:
+    do_work: bool
+    hide_content: bool
+    colorise_text: bool
+    show_on_toggle: bool
 
-    def getConnection():
-        conn = postgre.connect( host=DataBase.DB_HOST,
-                                port=DataBase.DB_PORT,
-                                dbname=DataBase.DB_NAME,
-                                user=DataBase.DB_USER,
-                                password=DataBase.DB_PASSWORD)
-        return conn
+@dataclass
+class BadWord:
+    word: str
+    inTag: bool 
+    counter: int
+
+
+
+
+class ContentChanger:
     
-    @dispatch(str)
-    def getUserId(login: str):
-        conn = DataBase.getConnection()
-        cur = conn.cursor()
-        cur.execute("""
-        SELECT id FROM users 
-        WHERE login = %(login)s;
-        """,
-        {'login': login})
-        try:
-            result = cur.fetchone()[0]
-        except:
-            result = ""
-        cur.close()
-        conn.close()
-        return result
-
-    @dispatch(object, str)
-    def getUserId(cur, login: str):
-        cur.execute("""
-        SELECT id FROM users 
-        WHERE login = %(login)s;
-        """,
-        {'login': login})
-        try:
-            result = cur.fetchone()[0]
-        except:
-            result = ""
-        return result
-
-    def getUserWords(user_id: int):
-        conn = DataBase.getConnection()
-        cur = conn.cursor()
-        result = []
-        cur.execute("""
-        SELECT word FROM regular_exceptions 
-        WHERE user_id = %(user_id)s;
-        """,
-        {'user_id': user_id})
-        table_data = cur.fetchall()
-        for num, row in enumerate(table_data):
-            result.append(row[0])
-        conn.close()
-        return result
-
-    def getUserRegEx(user_id: int):
-        conn = DataBase.getConnection()
-        cur = conn.cursor()
-
-        cur.execute("""
-        SELECT word FROM regular_exceptions 
-        WHERE user_id = %(user_id)s;
-        """,
-        {'user_id': user_id})
-
-        result = cur.fetchone()
-        cur.close()
-        conn.close()
-        return result
-
-    def getUserSettings(user_id: int):
-        conn = DataBase.getConnection()
-        cur = conn.cursor()
-
-
-        cur.execute("""
-        SELECT settings FROM settings 
-        WHERE user_id = %(user_id)s;
-        """,
-        {'user_id': user_id})
-
-        result = cur.fetchone()
-        cur.close()
-        conn.close()
-        return result
-
-    def getUserModelPath(user_id: int):
-        conn = DataBase.getConnection()
-        cur = conn.cursor()
-
-        cur.execute("""
-        SELECT path_to_model FROM ml_models 
-        WHERE user_id = %(user_id)s;
-        """,
-        {'user_id': user_id})
-
-        result = cur.fetchone()
-        cur.close()
-        conn.close()
-        return result
-
-
-
-    def getPasswordHash(login: str):
-        conn = DataBase.getConnection()
-        cur = conn.cursor()
-
-        cur.execute("""
-        SELECT password_hash FROM users 
-        WHERE login = %(login)s;
-        """,
-        {'login': login})
-
-        result = cur.fetchone()
-        cur.close()
-        conn.close()
-        return result
-
-    def saveNewUser(login: str, password_hash: str):
-        conn = DataBase.getConnection()
-        cur = conn.cursor()
-        print("vseOKK 1")
-
-        cur.execute("""
-        INSERT INTO users (login, password_hash) 
-        VALUES (%(login)s, %(password_hash)s);
-        """,
-        {'login': login, 'password_hash': password_hash})
-        print("vseOKK 2")
-        conn.commit()
-        print("vseOKK 3")
-
-        cur.execute("""
-        SELECT id FROM users 
-        WHERE login = %(login)s;
-        """,
-        {'login': login})
-        try:
-            user_id = cur.fetchone()[0]
-        except:
-            user_id = "NIHUYA"
-        print(user_id)
-        print("vseOKK 4")
-        cur.execute("""
-        INSERT INTO settings (user_id, settings) 
-        VALUES (%(user_id)s, %(settings)s);
-        """,
-        {'user_id': user_id, 'settings': DataBase.DEFAULT_JSON})
-
-        print("vseOKK 5")
-        conn.commit()
-        cur.close()
-        conn.close()
-        return user_id
+    def wordInsideTag(startIndex,endIndex,analize_text):
+        a1 = analize_text[:startIndex].rfind('>')
+        a2 = analize_text[:startIndex].rfind('<')
+        b1 = analize_text[endIndex:].rfind('>')
+        b2 = analize_text[endIndex:].rfind('<')
+        if ((a1 > a2 and b1 > b2) or (a1 == a2 == b1 == b2)):
+            return False
     
-    def findUser(login):
-        conn = DataBase.getConnection()
-        cur = conn.cursor()
-        cur.execute("""
-        SELECT * FROM users 
-        WHERE login = %(login)s;
-        """,
-        {'login': login})
+        return True
+
+    def chageContent(analize_text, finded_words, settings):
+        for word in finded_words:
+            if not word.inTag:
+                replacer_word = (
+                    "<span "
+                    + ("style=\"background-color:#ff0000\" " if settings.colorise_text else "")
+                    + ("onMouseOver=\"this.innerHTML='" + word.word + "'\" onMouseOut=\"this.innerHTML='" + '*'*len(word.word) + "'\"" if settings.show_on_toggle else "")
+                    
+                    +">" 
+                    + '*'*len(word.word) 
+                    + "</span>"
+                )
+
+            else:
+                replacer_word = '*'*len(word.word)
+
+            analize_text = analize_text.replace(word.word, replacer_word, word.counter)
+            
+        return analize_text
+
+
+    def readUserSettings(user_id):
+        string_settings = DataBase.getUserSettings(user_id)
+        return Settings(
+            True if string_settings[0] == '1' else False,
+            True if string_settings[1] == '1' else False,
+            True if string_settings[2] == '1' else False,
+            True if string_settings[3] == '1' else False, 
+        )
+    
+    def getUserRegExes(user_id):
+        return DataBase.getUserRegExes(user_id)
+    
+    def detectBadWordsInHTML(analize_text, user_regexes, website_url, user_id):
+        log_of_analise = []
+        tmp_array = []
         try:
-            result = cur.fetchone()
+            for user_regex in user_regexes:
+                regex = re.compile(user_regex)
+                matched_words = list(set(re.findall(regex, analize_text)))
+                for matched_word in matched_words:
+                    index = 0
+                    while True:
+                        finded = re.search(matched_word, analize_text[index:])
+                        if finded is None:
+                            break
+                        else: 
+                            startIndex = finded.span()[0]
+                            endIndex = finded.span()[1]
+                            index = endIndex + index
+                            inTag = ContentChanger.wordInsideTag(startIndex, endIndex, analize_text)
+                            counter = ContentChanger.getCounter(log_of_analise,matched_word) if matched_word in tmp_array else 1
+                            tmp_array.append(matched_word)
+                            
+                            log_of_analise.append(
+                                BadWord(
+                                    matched_word,
+                                    inTag,
+                                    counter
+
+                                )
+                            )   
+            DataBase.saveUserStatistic(user_id, website_url, len(tmp_array), { 'banned_words': tmp_array })             
+            return log_of_analise
         except:
-            result = ""
-        cur.close()
-        conn.close()
-        return result
-
-    def getUserRegEx(user_id):
-        conn = DataBase.getConnection()
-        cur = conn.cursor()
-        result = []
-        cur.execute("""
-        SELECT regular_exception FROM regular_exceptions 
-        WHERE user_id = %(user_id)s;
-        """,
-        {'user_id': user_id})
-        table_data = cur.fetchall()
-        for num, row in enumerate(table_data):
-            result.append(row[0])
-        cur.close()
-        conn.close()
-        return result
+            return log_of_analise
 
 
-print(DataBase.getUserId('Nemo'))
+    def getCounter(bad_words, finding_word):
+        counter = 1
+        for i in range(len(bad_words),0):
+            if bad_words[i].word == finding_word:
+                counter = bad_words[i].counter + 1 if bad_words.inTag else 0
+                break
+        return counter
 
-print(DataBase.getUserWords(2))
+    def getChangedHTML(website_url,user_id, analize_text): 
+        try:
+            user_settings = ContentChanger.readUserSettings(int(user_id))
+            user_regexes = ContentChanger.getUserRegExes(int(user_id))
+            finded_words = ContentChanger.detectBadWordsInHTML(analize_text, user_regexes, website_url, int(user_id))
+            if user_settings.hide_content:
+                changed_text = ContentChanger.chageContent(analize_text, finded_words, user_settings)
+                return changed_text
+            else: 
+                return 'Content not changed'
+        except:
+            return 'error'
 
-print(DataBase.saveNewUser('niger','tiger'))
-
-user_info = DataBase.findUser('Admin')
-print(user_info[0])
-print(user_info[1])
-print(user_info[2])
 
 
-print(DataBase.getUserRegEx('Admin'))
 

@@ -3,6 +3,7 @@ import re
 
 from dbo import DataBase
 
+
 @dataclass
 class Settings:
     do_work: bool
@@ -22,16 +23,22 @@ class BadWord:
 class ContentChanger:
     
     def wordInsideTag(startIndex,endIndex,analize_text):
-        if (analize_text[:startIndex].rfind('>') > analize_text[:startIndex].rfind('<') and 
-              analize_text[endIndex:].rfind('>') >   analize_text[endIndex:].rfind('<')):
+            
+        a1 = analize_text[:startIndex].rfind('>')
+        a2 = analize_text[:startIndex].rfind('<')
+        b1 = analize_text[endIndex:].rfind('>')
+        b2 = analize_text[endIndex:].rfind('<')
+        if ((a1 > a2 and b1 > b2) or (a1 == a2 == b1 == b2)):
             return False
     
         return True
 
     def chageContent(analize_text, finded_words, settings):
-
         for word in finded_words:
-            if not word.inTag:
+            if word.inTag:
+                replacer_word = '*'*len(word.word)
+            
+            else:
                 replacer_word = (
                     "<span "
                     + ("style=\"background-color:#ff0000\" " if settings.colorise_text else "")
@@ -42,10 +49,8 @@ class ContentChanger:
                     + "</span>"
                 )
 
-            else:
-                replacer_word = '*'*len(word.word)
-
-            analize_text = analize_text.replace(word.word, replacer_word, word.counter)
+            analize_text = analize_text.replace(word.word, replacer_word, word.counter) #replacer_word, word.counter)
+            
         return analize_text
 
 
@@ -59,37 +64,41 @@ class ContentChanger:
         )
     
     def getUserRegExes(user_id):
-        return DataBase.getUserRegExes()
+        return DataBase.getUserRegExes(user_id)
     
     def detectBadWordsInHTML(analize_text, user_regexes, website_url, user_id):
-        result_of_analise = []
+        log_of_analise = []
         tmp_array = []
-        for user_regex in user_regexes:
-            regex = re.compile(user_regex)
-            matched_words = list(set(re.findall(regex, analize_text)))
-            for matched_word in matched_words:
-                index = 0
-                while True:
-                    result = re.search(matched_word, analize_text[index:])
-                    if result is None:
-                        break
-                    else: 
-                        startIndex = result.span()[0]
-                        endIndex = result.span()[1]
-                        index = endIndex + index
-                        inTag = ContentChanger.wordInsideTag(startIndex, endIndex, analize_text)
-                        counter = ContentChanger.getCounter(result_of_analise,matched_word) if matched_word in tmp_array else 1
-                        tmp_array.append(matched_word)
-                        result_of_analise.append(
-                            BadWord(
-                                matched_word,
-                                inTag,
-                                counter
+        try:
+            for user_regex in user_regexes:
+                regex = re.compile(user_regex)
+                matched_words = list(set(re.findall(regex, analize_text)))
+                for matched_word in matched_words:
+                    index = 0
+                    while True:
+                        finded = re.search(matched_word, analize_text[index:])
+                        if finded is None:
+                            break
+                        else: 
+                            startIndex = finded.span()[0]
+                            endIndex = finded.span()[1]
+                            index = endIndex + index
+                            inTag = ContentChanger.wordInsideTag(startIndex, endIndex, analize_text)
+                            counter = ContentChanger.getCounter(log_of_analise,matched_word) if matched_word in tmp_array else 1
+                            tmp_array.append(matched_word)
+                            
+                            log_of_analise.append(
+                                BadWord(
+                                    matched_word,
+                                    inTag,
+                                    counter
 
-                            )
-                        )   
-        DataBase.saveUserStatistic(user_id, website_url, len(tmp_array), { 'banned_words': tmp_array })             
-        return result_of_analise
+                                )
+                            )   
+            #DataBase.saveUserStatistic(user_id, website_url, len(tmp_array), { 'banned_words': tmp_array })             
+            return log_of_analise
+        except:
+            return log_of_analise
 
 
     def getCounter(bad_words, finding_word):
@@ -101,16 +110,18 @@ class ContentChanger:
         return counter
 
     def getChangedHTML(website_url,user_id, analize_text): 
-        user_settings = ContentChanger.readSettings(user_id)
-        user_regexes = ContentChanger.getUserRegExes(user_id)
-        finded_words = ContentChanger.detectBadWordsInHTML(analize_text, user_regexes, website_url, user_id)
-        if user_settings.hide_content is True:
-            return ContentChanger.chageContent(analize_text, finded_words, user_settings)
-        else: 
-            return 'Content not changed'
+        try:
+            user_settings = ContentChanger.readUserSettings(int(user_id))
+            user_regexes = ContentChanger.getUserRegExes(int(user_id))
+            finded_words = ContentChanger.detectBadWordsInHTML(analize_text, user_regexes, website_url, int(user_id))
+            if user_settings.hide_content:
+                changed_text = ContentChanger.chageContent(analize_text, finded_words, user_settings)
+                return changed_text
+            else: 
+                return 'Content not changed'
+        except:
+            return 'error'
 
 
 
-
-     
 

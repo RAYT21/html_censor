@@ -1,6 +1,7 @@
 from inspect import getcallargs
 from multipledispatch import dispatch
 import psycopg2 as postgre
+from psycopg2.extras import Json
 from regexCreator import RegexCreator
 
 
@@ -245,6 +246,7 @@ class DataBase:
         WHERE user_id = %(user_id)s;
         """,
         {'user_id': user_id})
+        
         table_data = cur.fetchall()
         for num, row in enumerate(table_data):
             result.append(row[0])
@@ -275,11 +277,29 @@ class DataBase:
         conn = DataBase.getConnection()
         cur = conn.cursor()
 
-        cur.execute("""
-        INSERT INTO statistic (user_id, website_url, counter_banned_words, banned_words) 
-        VALUES (%(user_id)s, %(website_url)s, %(counter_banned_words)s, %(banned_words)s);
-        """,
-        {'user_id': user_id, 'website_url': website_url, 'counter_banned_words': counter_banned_words, 'banned_words': banned_words})
+
+        item ={
+            "user_id": user_id,
+            "website_url": website_url, 
+            "charecteristics":Json(banned_words), 
+            "counter_banned_words":counter_banned_words
+        }
+
+        def sql_insert(tableName, data_dict):
+            '''
+            INSERT INTO statistic (user_id, website_url, counter_banned_words) 
+            VALUES (%(user_id)s, %(website_url)s, %(counter_banned_words)s);
+            '''
+            sql = '''
+                INSERT INTO %s (%s)
+                VALUES (%%(%s)s );
+                '''   % (tableName, ',  '.join(data_dict),  ')s, %('.join(data_dict))
+            return sql
+
+        tableName = 'statistic'
+        sql = sql_insert(tableName, item)
+
+        cur.execute(sql, item)
         
         conn.commit()
         cur.close()

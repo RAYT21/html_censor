@@ -10,13 +10,8 @@ document.addEventListener('DOMContentLoaded', () => {
         localStorage.removeItem("set0");localStorage.removeItem("set1");
         localStorage.removeItem("set2");localStorage.removeItem("set3");
 
-        self.chrome.storage.local.set({ user_id: -1 }).then(() => {
-            console.log("Value is set to " + value);
-        });
-          
-        self.chrome.storage.local.get(["user_id"]).then((result) => {
-            console.log("Value currently is " + result.user_id);
-        });
+        chrome.storage.local.set({ user_id: -1 });
+        chrome.storage.local.set({ settings: '0000' });
 
         window.location.href = '/frontend/html/index.html';
     });

@@ -28,6 +28,7 @@
   "manifest_version": 3,
   "name": "Saver",
   "permissions": [
+    "webNavigation",
     "activeTab",
     "cookies",
     "clipboardWrite",
