@@ -7,16 +7,6 @@ from regexCreator import RegexCreator
 
 class DataBase:
 
-    DB_HOST = 'POSTGRES'
-    DB_NAME = 'diplomDB'
-    DB_USER = 'admin'
-    DB_PASSWORD = 'admin'
-    DB_PORT = '5432'
-
-    DEFAULT_JSON = '1111'
-
-
-
     def getConnection():
         conn = postgre.connect( host=DataBase.DB_HOST,
                                 port=DataBase.DB_PORT,
@@ -24,41 +14,29 @@ class DataBase:
                                 user=DataBase.DB_USER,
                                 password=DataBase.DB_PASSWORD)
         return conn
-
-
-# save data methods
     def saveNewUser(login: str, password_hash: str):
         conn = DataBase.getConnection()
         cur = conn.cursor()
-        print("vseOKK 1")
 
         cur.execute("""
         INSERT INTO users (login, password_hash) 
         VALUES (%(login)s, %(password_hash)s);
         """,
         {'login': login, 'password_hash': password_hash})
-        print("vseOKK 2")
         conn.commit()
-        print("vseOKK 3")
  
         user_id = DataBase.getUserId(cur,login)
         
-        print("vseOKK 4")
         cur.execute("""
         INSERT INTO settings (user_id, settings) 
         VALUES (%(user_id)s, %(settings)s);
         """,
         {'user_id': user_id, 'settings': DataBase.DEFAULT_JSON})
 
-        print("vseOKK 5")
         conn.commit()
         cur.close()
         conn.close()
         return user_id
-        
-        
-
-
     def updateUserSettings(user_id: int, settings: str):
         conn = DataBase.getConnection()
         cur = conn.cursor()
@@ -74,9 +52,6 @@ class DataBase:
         cur.close()
         conn.close()
         return True
-
-
-
     def saveWord(user_id: int, word: str):
         conn = DataBase.getConnection()
         cur = conn.cursor()
@@ -94,8 +69,6 @@ class DataBase:
         conn.close()
 
         return True
-
-
     def deleteWord(user_id: int, word: str):
         conn = DataBase.getConnection()
         cur = conn.cursor()
@@ -109,10 +82,8 @@ class DataBase:
         cur.close()
         conn.close()
 
-        return True
+        return True  
     
-
-    def saveImportingDictWords(user_id: int, words):
         conn = DataBase.getConnection()
         cur = conn.cursor()
 
@@ -126,8 +97,6 @@ class DataBase:
         conn.commit()
         cur.close()
         conn.close()
-
-
     @dispatch(str)
     def getUserId(login: str):
         conn = DataBase.getConnection()
@@ -144,7 +113,6 @@ class DataBase:
         cur.close()
         conn.close()
         return result
-
     @dispatch(object, str)
     def getUserId(cur, login: str):
         cur.execute("""
@@ -157,7 +125,6 @@ class DataBase:
         except:
             result = ""
         return result
-
     def getUserWord(user_id: int, word: str):
         conn = DataBase.getConnection()
         cur = conn.cursor()
@@ -173,7 +140,6 @@ class DataBase:
         cur.close()
         conn.close()
         return result
-
     def getUserWords(user_id: int):
         conn = DataBase.getConnection()
         cur = conn.cursor()
@@ -189,7 +155,6 @@ class DataBase:
         cur.close()
         conn.close()
         return result
-
     def getUserSettings(user_id: int):
         conn = DataBase.getConnection()
         cur = conn.cursor()
@@ -205,7 +170,6 @@ class DataBase:
         cur.close()
         conn.close()
         return result
-
     def getUserModelPath(user_id: int):
         conn = DataBase.getConnection()
         cur = conn.cursor()
@@ -220,7 +184,6 @@ class DataBase:
         cur.close()
         conn.close()
         return result
-
     def findUser(login):
         conn = DataBase.getConnection()
         cur = conn.cursor()
@@ -236,7 +199,6 @@ class DataBase:
         cur.close()
         conn.close()
         return result
-
     def getUserRegExes(user_id):
         conn = DataBase.getConnection()
         cur = conn.cursor()
@@ -252,8 +214,7 @@ class DataBase:
             result.append(row[0])
         cur.close()
         conn.close()
-        return result
-    
+        return result  
     def getUserStatistic(user_id):
         conn = DataBase.getConnection()
         cur = conn.cursor()
@@ -271,8 +232,7 @@ class DataBase:
 
         cur.close()
         conn.close()
-        return result, res_bool
-    
+        return result, res_bool   
     def saveUserStatistic(user_id, website_url, counter_banned_words, banned_words):
         conn = DataBase.getConnection()
         cur = conn.cursor()
@@ -307,3 +267,10 @@ class DataBase:
 
         return True
 
+    DB_HOST = 'POSTGRES'
+    DB_NAME = 'diplomDB'
+    DB_USER = 'admin'
+    DB_PASSWORD = 'admin'
+    DB_PORT = '5432'
+
+    DEFAULT_JSON = '1111'

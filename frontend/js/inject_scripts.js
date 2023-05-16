@@ -44,7 +44,7 @@ async function getCensorPage(){
     if (result.result_response != false){
         if (result.reuslt != 'Content not changed' ){
             document.documentElement.innerHTML = result.result;
-            console.log('КОНТЕНТ ИЗМЕНЕН ')
+            alert('Контент страницы изменен')
             console.log(result)
         }
         else {

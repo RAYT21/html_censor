@@ -105,7 +105,7 @@ class ContentChanger:
         counter = 1
         for i in range(len(bad_words),0):
             if bad_words[i].word == finding_word:
-                counter = bad_words[i].counter + 1 if bad_words.inTag else 0
+                counter = bad_words[i].counter + 1 if bad_words[i].inTag else bad_words[i].counter
                 break
         return counter
 

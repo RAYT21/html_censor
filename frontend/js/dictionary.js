@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const plusBtn = document.querySelector('.plus-btn');
     const wordInput = document.querySelector('.add-word');
     const backMenuBtn = document.querySelector('#back-to-menu');
-    const importBtn = document.querySelector('.import-btn');
     const exportBtn = document.querySelector('.export-btn');
 
     onLoad();
@@ -98,12 +97,9 @@ document.addEventListener('DOMContentLoaded', () => {
                             });
                         }
                         else{
-                            alert("Ошибка сервера, слово не было создано.");
+                            alert("Слово <"+ word +"> уже присутствует в словаре.");
                         }
 
-                    }
-                    else {
-                        console.error(xhr.statusText);
                     }
                 }
             };
