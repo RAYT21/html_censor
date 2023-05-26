@@ -2,14 +2,14 @@ CREATE DATABASE diplomDB;
  \c diplomDB
 
 CREATE TABLE users(
-    id SERIAL PRIMARY KEY,
+    id SERIAL NOT NULL PRIMARY KEY,
     login VARCHAR(255) NOT NULL,
     password_hash VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE regular_exceptions(
     id SERIAL NOT NULL PRIMARY KEY,
-    user_id INTEGER NULL REFERENCES users(id),
+    user_id INTEGER NOT NULL REFERENCES users(id),
     word VARCHAR(255) NOT NULL,
     regular_exception VARCHAR(10000) NOT NULL
 );
@@ -22,7 +22,7 @@ CREATE TABLE settings(
     
 CREATE TABLE statistic(
     id SERIAL NOT NULL PRIMARY KEY ,
-    user_id INTEGER NULL REFERENCES users(id),
+    user_id INTEGER NOT NULL REFERENCES users(id),
     website_url VARCHAR(255) NOT NULL,
     counter_banned_words VARCHAR(255) NOT NULL,
     banned_words JSONB NOT NULL

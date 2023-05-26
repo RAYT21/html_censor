@@ -37,7 +37,6 @@ class ContentChanger:
     def chageContent(analize_text, finded_words, settings):
         for word in finded_words:
             print(word)
-            print(word.inTag)
             if not word.inTag:
                 replacer_word = (
                     "<span "
@@ -51,14 +50,12 @@ class ContentChanger:
 
             else:
                 replacer_word = '*'*len(word.word)
-            print("before \n" + analize_text )
             offset = 0
-            for i in range(word.counter):
-                offset = analize_text[offset:].index(word.word) + 1
-            print(offset)
+            if word.counter > 1:
+                for i in range(0,word.counter-1):
+                    tmp = analize_text[offset:].index(word.word) + 1
+                    offset = offset if tmp < offset else tmp 
             analize_text = analize_text[:offset] + analize_text[offset:].replace(word.word, replacer_word, 1)
-            print("after \n" + analize_text )
-            
         return analize_text
 
 
@@ -95,10 +92,8 @@ class ContentChanger:
                             endIndex = finded.span()[1]
                             index = endIndex + index
                             inTag = ContentChanger.wordInsideTag(startIndex, endIndex, analize_text)
-                            print(matched_word in tmp_array)
                             counter = ContentChanger.getCounter(log_of_analise, matched_word, settings) if matched_word in tmp_array else 1
                             tmp_array.append(matched_word)
-                            print("matched_word "+ matched_word + " startIndex " + str(startIndex) + " endIndex " + str(endIndex) +" inTag " + str(inTag) +" counter " + str(counter) )
                             
                             log_of_analise.append(
                                 BadWord(
@@ -108,27 +103,18 @@ class ContentChanger:
                                     startIndex,
                                     endIndex
                                 )
-                            )      
-            print(tmp_array)
+                            )  
             return log_of_analise
             
         except:
-            print('error')
-            print(tmp_array)
             return log_of_analise
 
     def getCounter(bad_words, finding_word, settings):
         counter = 1
-        print('printerer1')
         for bad_word in reversed(bad_words):
-            print(bad_word.word == finding_word)
-            print(bad_word.word)
-            print(finding_word)
             if bad_word.word == finding_word:
-                print(bad_word.counter + 1 if bad_word.inTag else bad_word.counter if not settings.show_on_toggle else bad_word.counter + 1)
                 counter = bad_word.counter + 1 if bad_word.inTag else bad_word.counter if not settings.show_on_toggle else bad_word.counter + 1
                 break
-        print('printerer2')
         return counter
 
     def getChangedHTML(website_url,user_id, analize_text): 
@@ -143,7 +129,169 @@ class ContentChanger:
                 return 'Content not changed'
         except:
             return 'error'
-text= '<span text"OGUрец"></span><span>0гуRец</span><span>Город</span><span>   огурец</span><span text"огурец"></span>'
+        
+text= """
+<span text"OGUрец"></span>
+<span>Город</span>
+<span>   огурец</span>
+<span text"огурец"></span>
+<span text"*****"></span>
+<span>0гуRец</span>
+"""
+
 
 
 print(ContentChanger.getChangedHTML('www.yandex.ru','1',text))
+
+
+
+
+import re
+from flask import Flask, request, jsonify, make_response
+from flask_cors import CORS, cross_origin
+from flask_restx import Api, Resource, fields
+from dbo import DataBase
+from contentChanger import ContentChanger
+import regexCreator
+import dbo
+
+
+app = Flask(__name__)
+api = Api(app = app, version='0.1', title='REST API',
+    description='RegularExpressions creater'
+)
+
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
+app.config['JSON_AS_ASCII'] = False
+
+contentSpace = api.namespace('contentChanger', description='DBworker')
+accountSpace = api.namespace('accountManager', description='ManagingAccount')
+statisticSpace = api.namespace('userStatistic', description='UserStatistic')
+
+@accountSpace.route("/words/<user_id>&<word>",methods=['GET'])
+class WordSaver(Resource):
+	@cross_origin()
+	def get( self, user_id, word):
+		try:
+			result = DataBase.getUserWord( user_id, word)
+			if result == "":
+				result = DataBase.saveWord( user_id, word)
+			else:
+				result = False
+		except:
+			result = False
+		return make_response(jsonify({'result': result}), 200)
+
+@accountSpace.route("/deleteWord/<user_id>&<word>",methods=['GET'])
+class WordDeleter(Resource):
+	@cross_origin()
+	def get( self, user_id, word):
+		try:
+			result = DataBase.deleteWord( user_id, word)
+		except:
+			result = False
+		return make_response(jsonify({'result': result}), 200)
+
+@accountSpace.route("/words/<user_id>",methods=['GET'])
+class AccauntWordsGet(Resource):
+	@cross_origin()
+	def get(self,user_id):
+		try:
+			result = DataBase.getUserWords(user_id)
+		except:
+			result = False
+		return make_response(jsonify({'result': result}), 200)
+	
+@statisticSpace.route("/statistic/<user_id>",methods=['GET'])
+class StatisticGet(Resource):
+	@cross_origin()
+	def get(self,user_id):
+		try:
+			result, res_bool = DataBase.getUserStatistic(user_id)
+			if not res_bool:
+				result = 'Статистика пока не собиралась'
+		except:
+			result = False
+		return make_response(jsonify({'result': result, 'res_bool': res_bool}), 200)
+		 
+
+@accountSpace.route("/registration/<login>&<password_hash>",methods=['GET'])
+class AccauntRegister(Resource):
+	@cross_origin()
+	def get(self,login,password_hash):
+		try:
+			result = DataBase.getUserId(login)
+			if result == "":
+				result = DataBase.saveNewUser(login,password_hash)
+			else:
+				result = -1
+		except:
+			result = -1
+		return make_response(jsonify({'result': result}), 200)
+
+
+@accountSpace.route("/authorization/<login>&<password_hash>",methods=['GET'])
+class AccauntAuth(Resource):
+	@cross_origin()
+	def get(self,login,password_hash):
+		try:
+			user_info = DataBase.findUser(login)
+			if user_info[1]==login and user_info[2]==password_hash:
+				result = user_info[0]
+				settings = DataBase.getUserSettings(user_info[0])
+			else:
+				settings = -1
+				result = -1
+
+
+		except:
+			settings = -1
+			result = -1
+		return make_response(jsonify({'result': result, 'settings': settings}), 200)
+
+@accountSpace.route("/settings/<user_id>&<json>",methods=['GET'])
+class AccauntSettingsUpdage(Resource):
+	@cross_origin()
+	def get(self,user_id,json):
+		try:
+			result = DataBase.updateUserSettings(user_id, json)
+		except:
+			result = False
+		return make_response(jsonify({'result': result}), 200)
+
+@accountSpace.route("/settings/<user_id>",methods=['GET'])
+class AccauntSettingsGet(Resource):
+	@cross_origin()
+	def get(self,user_id):
+		try:
+			result = DataBase.getUserSettings(user_id)
+		except:
+			result = False
+		return make_response(jsonify({'result': result}), 200)
+
+
+@contentSpace.route("/changeContent",methods=['POST'])
+class AnalizeContentFromJSON(Resource):
+	@cross_origin()
+	def post(self):
+		try:
+			request_data = request.get_json()
+			resp_res = ContentChanger.getChangedHTML(request_data['website_url'],request_data['user_id'], request_data['analize_text'])
+			result_response = True
+		except:
+			result_response = False
+		return make_response(jsonify({'result': resp_res, 'result_response': result_response}), 200)
+
+
+
+
+
+
+
+		 
+
+
+
+
+	

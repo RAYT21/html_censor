@@ -1,4 +1,3 @@
-from unittest import result
 import pymorphy3 as pymorphy
 
 
